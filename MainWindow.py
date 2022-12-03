@@ -2,18 +2,16 @@ import os
 import shutil
 import sys
 import time
-
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QMessageBox
-from PyQt5 import QtGui
-from pyqt5_plugins.examplebutton import QtWidgets
-from com.ui.CamShow import Ui_MainWindow
-from com.Camo_open import *
+from PyQt5 import QtGui, QtWidgets
+from CamShow import Ui_MainWindow
+from Camo_open import *
 from PyQt5.QtCore import QTimer, QDateTime
 from Functional_function import QImage2CV, CV2QImage, save_csv
 from face_model import recognize, load_dataset
-from com.ui.upload import Ui_Dialog
+from upload import Ui_Dialog
 
 
 class myQMainWindow(QMainWindow):
@@ -88,7 +86,7 @@ class myQMainWindow(QMainWindow):
         """
         sender = self.sender()
         # sender.setEnabled(False)
-        print("点击" + sender.text())
+        # print("点击" + sender.text())
         if sender.text() == '签到':
             self.ui.PushButton_2.setEnabled(False)
         elif sender.text() == '签退':
@@ -98,10 +96,10 @@ class myQMainWindow(QMainWindow):
         elif sender.text() == '训练模型':
             # self.ui.PushButton_learn.setEnabled(False)
             datasetPath = "./facedata"
-            X, y, names = load_dataset(datasetPath)
-            model = cv2.face.LBPHFaceRecognizer_create()
-            model.train(X, y)
-            print("训练完成")
+            X, y, self.names = load_dataset(datasetPath)
+            self.model = cv2.face.LBPHFaceRecognizer_create()
+            self.model.train(X, y)
+            # print("训练完成")
 
     '''子窗口'''
     def load_name(self,Filepath):
@@ -160,7 +158,7 @@ class myQMainWindow(QMainWindow):
 
     '''打开人脸识别'''
     def show_camera1(self):
-        face_cascade = cv2.CascadeClassifier("./data/haarcascade_frontalface_alt2.xml")  # opencv的人脸识别库
+        face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_alt2.xml")  # opencv的人脸识别库
         if self.cap.isOpened():
             ret, img = self.cap.read()  # 从视频流中读取
             img = cv2.flip(img, 1)  # 水平翻转
@@ -187,31 +185,46 @@ class myQMainWindow(QMainWindow):
         if self.ui.PushButton_2.isEnabled() == False and len(faces) == 1:
             showImage1 = self.taking_pictures(faces_ls=faces_ls, img=img_no)
             showImage1 = QImage2CV(showImage1)
-            img,self.name = recognize(showImage1)
-            self.ui.label_5.setText(time.strftime('%Y%m%d%H%M%S', time.localtime()))
-            self.show_img()
-            self.ui.PushButton_2.setEnabled(True)
-            self.ui.label_7.setText("签到成功")
-            self.ui.label_7.setStyleSheet("color:#00a000;font-weight: bold;font-size: 20px;font-family:system-ui;text-align:justify")
-            self.ui.label_6.setText(self.name)
-            save_csv(self.name,'签到成功',time.strftime('%Y%m%d%H%M%S', time.localtime()))  # 记录存入csv
+            try:
+                img,self.name = recognize(showImage1,self.model,self.names)
+                self.ui.label_5.setText(time.strftime('%Y%m%d%H%M%S', time.localtime()))
+                self.show_img()
+                self.ui.PushButton_2.setEnabled(True)
+                self.ui.label_7.setText("签到成功")
+                self.ui.label_7.setStyleSheet("color:#00a000;font-weight: bold;font-size: 20px;font-family:system-ui;text-align:justify")
+                self.ui.label_6.setText(self.name)
+                save_csv(self.name,'签到成功',time.strftime('%Y%m%d%H%M%S', time.localtime()))  # 记录存入csv
+            except:
+                # self.ui.PushButton_2.setEnabled(True)
+                self.ui.label_7.setText("签到失败")
+                self.ui.label_7.setStyleSheet(
+                    "color:#Ff0000;font-weight: bold;font-size: 20px;font-family:system-ui;text-align:justify")
+                self.ui.label_6.setText("unknow")
+                self.ui.label_3.clear()
 
         # todo 签退
         elif self.ui.PushButton_3.isEnabled() == False and len(faces) == 1:
             showImage1 = self.taking_pictures(faces_ls=faces_ls, img=img_no)
             showImage1 = QImage2CV(showImage1)
-            img, self.name = recognize(showImage1)
-            self.ui.label_5.setText(time.strftime('%Y%m%d%H%M%S', time.localtime()))
-            self.show_img()
-            self.ui.PushButton_3.setEnabled(True)
-            self.ui.label_7.setText("签退成功")
-            self.ui.label_7.setStyleSheet(
-                "color:#00a000;font-weight: bold;font-size: 20px;font-family:system-ui;text-align:justify")
-            self.ui.label_6.setText(self.name)
-            save_csv(self.name, '签退成功', time.strftime('%Y%m%d%H%M%S', time.localtime()))  # 记录存入csv
+            try:
+                img, self.name = recognize(showImage1,self.model,self.names)
+                self.ui.label_5.setText(time.strftime('%Y%m%d%H%M%S', time.localtime()))
+                self.show_img()
+                self.ui.PushButton_3.setEnabled(True)
+                self.ui.label_7.setText("签退成功")
+                self.ui.label_7.setStyleSheet(
+                    "color:#00a000;font-weight: bold;font-size: 20px;font-family:system-ui;text-align:justify")
+                self.ui.label_6.setText(self.name)
+                save_csv(self.name, '签退成功', time.strftime('%Y%m%d%H%M%S', time.localtime()))  # 记录存入csv
+            except:
+                # self.ui.PushButton_3.setEnabled(True)
+                self.ui.label_7.setText("签退失败")
+                self.ui.label_7.setStyleSheet(
+                    "color:#Ff0000;font-weight: bold;font-size: 20px;font-family:system-ui;text-align:justify")
+                self.ui.label_6.setText("unknow")
+                self.ui.label_3.clear()
         # todo 录入人脸
         elif self.load.pushButton.isEnabled() == False and len(faces) == 1:
-            print('1')
             for i in range(1, 6):
                 print(i)
                 self.taking_pictures(faces_ls=faces_ls, img=img_no, n=i, save=True)
@@ -265,9 +278,3 @@ class myQMainWindow(QMainWindow):
         showImage2 = CV2QImage(showImage2)
         showImage2 = showImage2.scaled(110, 150)
         self.ui.label_3.setPixmap(QtGui.QPixmap.fromImage(showImage2))
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    form = myQMainWindow()
-    form.show()
-    sys.exit(app.exec_())

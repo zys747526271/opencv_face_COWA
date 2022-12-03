@@ -1,0 +1,57 @@
+altgraph==0.17.3
+auto-py-to-exe==2.24.1
+blurhash==1.1.4
+boost==0.1
+bottle==0.12.23
+bottle-websocket==0.2.9
+cachetools==5.2.0
+certifi==2022.9.24
+cffi==1.15.1
+charset-normalizer==2.1.1
+click==7.1.2
+cmake==3.24.3
+colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1666700638685/work
+decorator==5.1.1
+dlib @ file:///D:/bld/dlib_1652035331399/work
+docopt==0.6.2
+Eel==0.14.0
+face-recognition @ file:///home/conda/feedstock_root/build_artifacts/face_recognition_1619808233029/work
+face-recognition-models @ file:///home/conda/feedstock_root/build_artifacts/face_recognition_models_1595707436534/work
+future==0.18.2
+gevent==22.10.2
+gevent-websocket==0.10.1
+greenlet==2.0.1
+idna==3.4
+Mastodon.py==1.5.2
+numpy==1.23.4
+opencv-contrib-python==4.6.0.66
+pefile==2022.5.30
+Pillow==9.2.0
+pipreqs==0.4.11
+py2exe==0.13.0.0
+pycparser==2.21
+pyinstall==0.1.4
+pyinstaller==5.6.2
+pyinstaller-hooks-contrib==2022.13
+pyparsing==3.0.9
+PyQt5==5.15.4
+pyqt5-plugins==5.15.4.2.2
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.11.0
+pyqt5-tools==5.15.4.3.2
+python-dateutil==2.8.2
+python-dotenv==0.21.0
+python-magic==0.4.27
+pytz==2022.6
+pywin32-ctypes==0.2.0
+qt5-applications==5.15.2.2.2
+qt5-tools==5.15.2.1.2
+requests==2.28.1
+six==1.16.0
+SQLAlchemy==1.4.44
+urllib3==1.26.12
+whichcraft==0.6.1
+wincertstore==0.2
+yarg==0.1.9
+zope.event==4.5.0
+zope.interface==5.5.2

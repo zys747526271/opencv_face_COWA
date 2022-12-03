@@ -5,7 +5,6 @@ def video_demo():
     capture = cv2.VideoCapture(0)
     while (True):
         ref, frame = capture.read()
-
         cv2.imshow("1", frame)
         # 等待30ms显示图像，若过程中按“Esc”退出
         c = cv2.waitKey(30) & 0xff

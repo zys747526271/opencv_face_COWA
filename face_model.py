@@ -21,15 +21,14 @@ def load_dataset(datasetPath):
     return X, y, names
 
 
-datasetPath = "./facedata"
-X, y, names = load_dataset(datasetPath)
+
+# datasetPath = "./facedata"
+# X, y, names = load_dataset(datasetPath)
 # 报错找不到face模块是因为只安装了主模块
 # pip uninstall opencv-python,   pip install opencv0-contrib-python
 # 创建人脸识别模型(三种识别模式）
 # model = cv2.face.EigenFaceRecognizer_create() #createEigenFaceRecognizer()函数已被舍弃
 # model = cv2.face.FisherFaceRecognizer_create()
-model = cv2.face.LBPHFaceRecognizer_create()  #
-model.train(X, y)
 
 def recognize(img):
     global model, names
@@ -37,6 +36,15 @@ def recognize(img):
     front_face_cascade = cv2.CascadeClassifier(r'./data/haarcascade_frontalface_default.xml')  # 检测正脸
     faces0 = front_face_cascade.detectMultiScale(gray, 1.025, 5)
     eye_cascade = cv2.CascadeClassifier(r'./data/haarcascade_eye_tree_eyeglasses.xml')  # 检测眼睛
+# model = cv2.face.LBPHFaceRecognizer_create()
+# model.train(X, y)
+
+def recognize(img,model,names):
+    # model, names
+    gray =cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    front_face_cascade = cv2.CascadeClassifier(r'./haarcascade_frontalface_default.xml')  # 检测正脸
+    faces0 = front_face_cascade.detectMultiScale(gray, 1.025, 5)
+    eye_cascade = cv2.CascadeClassifier(r'./haarcascade_eye_tree_eyeglasses.xml')  # 检测眼睛
     for (x, y, w, h) in faces0:
         # print(x,y,w,h)
         face_area = gray[y: y + h, x: x + w]  # 疑似人脸区域
@@ -50,7 +58,7 @@ def recognize(img):
     cv2.imwrite("e.pgm", roi)  # 若识别错误,可以添加到正确的数据集,提高后续的识别率
     ID_predict, confidence = model.predict(roi)  # 预测！！！
     name = names[ID_predict]
-    print("name:%s, confidence:%.2f" % (name, confidence))
+    # print("name:%s, confidence:%.2f" % (name, confidence))
     text = name if confidence > 70 else "unknow"  # 10000 for EigenFaces #70 for LBPH
     cv2.putText(img, text, (x, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)  # 绘制绿色文字
     return img,name
@@ -58,6 +66,6 @@ def recognize(img):
 # imgPath = "facedata/zys/20221117230712.jpg"
 # img = cv2.imread(imgPath)
 # cv2.imshow(imgPath, recognize(img))
-cv2.waitKey()
-cv2.destroyAllWindows()
+# cv2.waitKey()
+# cv2.destroyAllWindows()
 
